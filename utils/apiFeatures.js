@@ -25,8 +25,8 @@ class APIFeatures {
   }
   pagination(resPerPage) {
     const currentPage = Number(this.queryStr.page) || 1;
-    const skip = resperPage * (currentPage - 1);
-    this.query = this.query.skip(skip).limit(resperPage);
+    const skip = resPerPage * (currentPage - 1);
+    this.query = this.query.skip(skip).limit(resPerPage);
     return this;
   }
 }

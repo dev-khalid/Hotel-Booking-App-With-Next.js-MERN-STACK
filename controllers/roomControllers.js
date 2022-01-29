@@ -11,13 +11,13 @@ const allRooms = catchAsyncError(async (req, res) => {
   const roomsCount = await Room.countDocuments();
   const apiFeatures = new APIFeatures(Room.find(), req.query).search().filter();
   let rooms = await apiFeatures;
-  const fiterRoomsCount = rooms.length;
+  const filteredRoomsCount = rooms.length;
   apiFeatures.pagination(resPerPage);
   rooms = await apiFeatures.query;
 
   res.json({
     success: true,
-    roomscount,
+    roomsCount,
     resPerPage,
     filteredRoomsCount,
     rooms,
