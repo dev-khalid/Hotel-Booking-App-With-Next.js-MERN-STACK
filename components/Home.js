@@ -1,6 +1,13 @@
 import React from 'react';
-
+import { useDispatch, useSelector } from 'react-redux';
+import { clearActions } from '../redux/actions/roomActions';
 const Home = () => {
+  const dispatch = useDispatch();
+
+  const { rooms, resPerPage, roomsCount, filteredRoomsCount, error } =
+    useSelector((state) => state.allRooms);
+  
+    
   return (
     <section id="rooms" className="container mt-5">
       <h2 className="mb-3 ml-2 stays-heading">Stays in New York</h2>

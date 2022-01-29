@@ -6,12 +6,12 @@ import APIFeatures from '../utils/apiFeatures';
 
 //Create all rooms => /api/rooms
 
-const allRooms = catchAsyncError(async (req, res) => { 
+const allRooms = catchAsyncError(async (req, res) => {
   const resPerPage = 4;
   const roomsCount = await Room.countDocuments();
   const apiFeatures = new APIFeatures(Room.find(), req.query).search().filter();
   let rooms = await apiFeatures;
-  const filteredRoomsCount = rooms.length;
+  const filteredRoomsCount = rooms.length || 0;
   apiFeatures.pagination(resPerPage);
   rooms = await apiFeatures.query;
 
