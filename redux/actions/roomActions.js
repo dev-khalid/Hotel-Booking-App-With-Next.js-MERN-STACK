@@ -4,6 +4,8 @@ import absoluteUrl from 'next-absolute-url';
 import {
   ALL_ROOMS_SUCCESS,
   ALL_ROOMS_FAIL,
+  ROOM_DETAILS_FAIL,
+  ROOM_DETAILS_SUCCESS,
   CLEAR_ERRORS,
 } from '../constants/roomConstants';
 
@@ -23,6 +25,24 @@ export const getRooms = (req) => async (dispatch) => {
       type: ALL_ROOMS_FAIL,
       payload: error.response.data.message,
     });
+  }
+};
+
+export const getRoomDetails = (req, id) => async (dispatch) => {
+  try {
+    const { origin } = absoluteUrl(req);
+    let url = `${origin}/api/rooms/${id}`
+    console.log(url); 
+    const { data } = await axios.get(url);
+    dispatch({
+      type: ROOM_DETAILS_SUCCESS,
+      payload: data.room,
+    });
+  } catch (error) { 
+    dispatch({
+      type: ROOM_DETAILS_FAIL,
+      payload: error.response.data.message,
+    });  
   }
 };
 
