@@ -10,6 +10,7 @@ const Header = () => {
 
   useEffect(() => { 
     if(!user) { 
+      console.log('🔥🔥🔥')
       dispatch(loadUser()); 
     } 
   },[dispatch,user]); 

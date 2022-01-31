@@ -38,7 +38,8 @@ const registerUser = catchAsyncError(async (req, res, next) => {
 
 // Cuurent user profile   =>   /api/me
 const currentUserProfile = catchAsyncError(async (req, res) => {
-  const user = await User.findById(req.user._id);
+  const user = await User.findById(req.user.sub);
+  
 
   res.status(200).json({
     success: true,
