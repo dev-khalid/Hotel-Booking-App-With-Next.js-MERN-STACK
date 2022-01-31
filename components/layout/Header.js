@@ -6,11 +6,10 @@ import {signOut} from 'next-auth/react';
 
 const Header = () => {
   const dispatch = useDispatch(); 
-  const {user,loading} = useSelector(state=> state.loadUser); 
+  const { user, loading } = useSelector((state) => state.loadedUser); 
 
   useEffect(() => { 
     if(!user) { 
-      console.log('🔥🔥🔥')
       dispatch(loadUser()); 
     } 
   },[dispatch,user]); 

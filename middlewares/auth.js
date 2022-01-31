@@ -8,6 +8,8 @@ const isAuthenticatedUser = catchAsyncErrors(async(req,res,next)=> {
   }
   
   req.user = session.user; 
+  req.user._id = session.user.sub; 
+  
   next(); 
 })
 
