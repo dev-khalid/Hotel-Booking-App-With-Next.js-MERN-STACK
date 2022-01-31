@@ -1,0 +1,5 @@
+pages er moddhe ja ja thakbe sob routing 
+components er moddhe ashol component gula thakle 
+api routing er jonne pages/api/room/something . 
+and eita handle korbe controllers. 
+to perform any action on components we use redux. 
