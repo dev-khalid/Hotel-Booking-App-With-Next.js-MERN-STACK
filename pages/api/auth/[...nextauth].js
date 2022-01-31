@@ -1,21 +1,22 @@
-import NextAuth from 'next-auth/next';
-import CredentialsProvider from 'next-auth/providers/credentials';
-
+import NextAuth from 'next-auth';
+import CredentialsProvider from 'next-auth/providers/credentials'; 
 import User from '../../../models/user';
 import dbConnect from '../../../config/dbConnect';
 
 export default NextAuth({
   session: {
+    strategy: 'jwt',
     jwt: true,
+  },
+  jwt: {
+    secret: 'eita amar secret',
   },
   providers: [
     CredentialsProvider({
-      async authorize(creadentials) {
-        dbConnect();
-        const { email, password } = credentials;
-
-        //check if email and password is entered
-        // Check if email and password is entered
+      async authorize(credentials) {
+       dbConnect(); 
+        const { email, password } = credentials; 
+ 
         if (!email || !password) {
           throw new Error('Please enter email or password');
         }
@@ -33,13 +34,13 @@ export default NextAuth({
         if (!isPasswordMatched) {
           throw new Error('Invalid Email or Password');
         }
-
-        return Promise.resolve(user);
+        return user;
       },
     }),
   ],
   callbacks: {
     jwt: async (token, user) => {
+      console.log(token, user);
       user && (token.user = user);
       return Promise.resolve(token);
     },
