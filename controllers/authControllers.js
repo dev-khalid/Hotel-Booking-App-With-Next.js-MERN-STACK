@@ -2,8 +2,9 @@ import User from '../models/user';
 import cloudinary from 'cloudinary';
 import ErrorHandler from '../utils/errorHandler';
 import catchAsyncError from '../middlewares/catchAsyncError';
-
+import absoluteUrl from 'next-absolute-url';
 import crypto from 'crypto';
+import sendEmail from '../utils/sendEmail';
 
 // Setting up cloudinary config
 cloudinary.config({
@@ -77,4 +78,73 @@ const updateProfile = catchAsyncError(async (req, res) => {
   });
 });
 
-export { registerUser, currentUserProfile, updateProfile };
+//forgot passoword => /api/password/forgot
+const forgotPassword = catchAsyncError(async (req, res, next) => {
+  const user = await User.findOne({ email: req.body.email });
+  if (!user) {
+    return next(new ErrorHHandler('User not found with this email', 404));
+  }
+  //get reset token
+  const resetToken = user.getResetToken();
+  await user.save();
+  //get origin
+  const { origin } = absoluteUrl(req);
+  //create reset password url
+  const resetUrl = `${origin}/password/reset/${resetToken}`;
+  const message = `Your password reset url is as follow : \n\n ${resetUrl}`;
+  try {
+    await sendEmail({
+      email: user.email,
+      subject: 'BookIT Password Recovery',
+      message,
+    });
+    res.json({
+      success: true,
+      message: `Email sent to : ${user.email}`,
+    });
+  } catch (error) {
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpire = undefined;
+
+    await user.save({ validateBeforeSave: false });
+
+    return next(new ErrorHandler(error.message, 500));
+  }
+});
+
+// Reset password   =>   /api/password/reset/:token
+const resetPassword = catchAsyncErrors(async (req, res, next) => {
+
+    // Hash URL token
+    const resetPasswordToken = crypto.createHash('sha256').update(req.query.token).digest('hex');
+
+    const user = await User.findOne({
+        resetPasswordToken,
+        resetPasswordExpire: { $gt: Date.now() }
+    });
+
+    if (!user) {
+        return next(new ErrorHandler('Password reset token is invalid or has been expired', 400))
+    }
+
+    if (req.body.password !== req.body.confirmPassword) {
+        return next(new ErrorHandler('Password does not match', 400))
+    }
+
+    // Setup the new password
+    user.password = req.body.password
+
+    user.resetPasswordToken = undefined
+    user.resetPasswordExpire = undefined
+
+    await user.save();
+
+    res.status(200).json({
+        success: true,
+        message: 'Password updated successfully'
+    })
+
+})
+
+
+export { registerUser, currentUserProfile, updateProfile,forgotPassword,resetPassword };

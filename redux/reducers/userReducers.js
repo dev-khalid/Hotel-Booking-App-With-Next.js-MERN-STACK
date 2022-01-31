@@ -10,6 +10,9 @@ import {
   UPDATE_PROFILE_SUCCESS,
   UPDATE_PROFILE_RESET,
   UPDATE_PROFILE_FAIL,
+  FORGOT_PASSWORD_REQUEST,
+  FORGOT_PASSWORD_SUCCESS,
+  FORGOT_PASSWORD_FAIL,
 } from '../constants/userConstants';
 
 // Auth reducer
@@ -97,6 +100,39 @@ export const userReducer = (state = {}, action) => {
         ...state,
         error: null,
       };
+    default:
+      return state;
+  }
+};
+
+
+
+export const forgotPasswordReducer = (state = {}, action) => {
+  switch (action.type) {
+    case FORGOT_PASSWORD_REQUEST:
+      return {
+        loading: true,
+      };
+
+    case FORGOT_PASSWORD_SUCCESS:
+      return {
+        loading: false,
+        message: action.payload,
+      };
+
+  
+    case FORGOT_PASSWORD_FAIL:
+      return {
+        loading: false,
+        error: action.payload,
+      };
+
+    case CLEAR_ERRORS:
+      return {
+        ...state,
+        error: null,
+      };
+
     default:
       return state;
   }
