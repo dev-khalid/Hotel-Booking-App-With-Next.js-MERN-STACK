@@ -76,7 +76,7 @@ const checkBookedDatesOfRoom = catchAsyncError(async (req, res) => {
   const { roomId } = req.query;
   const bookings = await Booking.find({ room: roomId });
   let bookedDates = [];
-  const timeDifferenc = moment.length().utcOffset() / 60;
+  const timeDifferenc = moment().utcOffset() / 60;
   bookings.forEach((booking) => {
     const checkInDate = moment(booking.checkInDate).add(
       timeDifference,
@@ -99,7 +99,7 @@ const checkBookedDatesOfRoom = catchAsyncError(async (req, res) => {
 });
 
 // Get all bookings of current user   =>   /api/bookings/me
-const myBookings = catchAsyncErrors(async (req, res) => {
+const myBookings = catchAsyncError(async (req, res) => {
   const bookings = await Booking.find({ user: req.user._id })
     .populate({
       path: 'room',
@@ -117,7 +117,7 @@ const myBookings = catchAsyncErrors(async (req, res) => {
 });
 
 // Get booking details   =>   /api/bookings/:id
-const getBookingDetails = catchAsyncErrors(async (req, res) => {
+const getBookingDetails = catchAsyncError(async (req, res) => {
   const booking = await Booking.findById(req.query.id)
     .populate({
       path: 'room',
